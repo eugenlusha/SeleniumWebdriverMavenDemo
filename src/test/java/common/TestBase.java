@@ -9,6 +9,7 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.JsonFormatter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
+import com.sample.www.Functions.Screenshot;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import library.WebDriver;
 import org.apache.logging.log4j.LogManager;
@@ -69,6 +70,7 @@ public class TestBase {
 
         if (result.getStatus() == ITestResult.FAILURE) {
             test.fail(result.getName() + " test case is failed. " + "<span class='badge badge-danger'> Fail </span>" + result.getThrowable());
+            Screenshot.captureScreenshot(driver,result.getName()); // kte rresht e shtova un
             test.fail(new Throwable());
             test.fail(new Exception());
 
