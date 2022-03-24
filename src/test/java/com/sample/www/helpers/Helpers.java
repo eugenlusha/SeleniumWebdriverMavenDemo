@@ -110,11 +110,18 @@ public class Helpers{
         waiter.until(ExpectedConditions.textToBe(By.xpath(xpath),str));
     }
 
+    public void waitForNumberOfElementsToBe(By elements, int nr){
+        waiter.until(ExpectedConditions.numberOfElementsToBe(elements,nr));
+    }
+
     public void waitForTextOfElementNotToBe(WebElement element,String str){
         waiter.until(ExpectedConditions.visibilityOf(element));
         waiter.until(ExpectedConditions.not(ExpectedConditions.textToBePresentInElement(element,str)));
     }
 
+    public String getCurrentURL(){
+        return driver.getCurrentUrl();
+    }
 
 
 }

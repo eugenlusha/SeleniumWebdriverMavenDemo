@@ -10,6 +10,7 @@ import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.JsonFormatter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import com.sample.www.Functions.Screenshot;
+import com.sample.www.nopCommercePageObject.*;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import library.WebDriver;
 import org.apache.logging.log4j.LogManager;
@@ -24,6 +25,7 @@ import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeTest;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -49,6 +51,12 @@ public class TestBase {
     public static JsonFormatter json;
     public static String reportDestination = "reports/report_" + dt + ".html";
     protected final Logger logger = LogManager.getLogger(getClass());
+    public static MainPageService mainPageService;
+    public static CartPageService cartPageService;
+    public static LoginPageService loginPageService;
+    public static RegisterPageService registerPageService;
+    public static NotebooksPageService notebooksPageService;
+    public static MyAccountPageService myAccountPageService;
 
     @BeforeSuite(alwaysRun = true)
     public void setUp() throws IOException {
@@ -70,7 +78,7 @@ public class TestBase {
 
         if (result.getStatus() == ITestResult.FAILURE) {
             test.fail(result.getName() + " test case is failed. " + "<span class='badge badge-danger'> Fail </span>" + result.getThrowable());
-            Screenshot.captureScreenshot(driver,result.getName()); // kte rresht e shtova un
+            Screenshot.captureScreenshot(driver,result.getName());
             test.fail(new Throwable());
             test.fail(new Exception());
 
@@ -80,6 +88,22 @@ public class TestBase {
         } else if (result.getStatus() == ITestResult.SUCCESS) {
             test.pass(result.getName() + " test case is Passed." + "<span class='badge badge-success'> Success </span>");
         }
+    }
+    @BeforeTest
+    public void navigateToHomePage(){
+        test = extent.createTest("Test te ndryshme", "test")
+                .assignCategory("e2e testin")
+                .assignAuthor("eugen");
+
+        driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+        driver.manage().window().maximize();
+        driver.get("https://demo.nopcommerce.com/");
+        mainPageService = new MainPageService(driver);
+        cartPageService = new CartPageService(driver);
+        loginPageService = new LoginPageService(driver);
+        registerPageService= new RegisterPageService(driver);
+        notebooksPageService=new NotebooksPageService(driver);
+        myAccountPageService=new MyAccountPageService(driver);
     }
 
     public void extentReportSpark() {

@@ -2,10 +2,13 @@ package com.sample.www.nopCommerce;
 
 import com.sample.www.Functions.Functions;
 import com.sample.www.helpers.Helpers;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
+import org.openqa.selenium.support.FindBys;
+import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
 
 import java.util.List;
@@ -16,11 +19,14 @@ public class CartPage {
     public CartPage(WebDriver driver){
         this.helpers=new Helpers(driver);
         this.functions=new Functions(driver);
+        PageFactory.initElements(driver,this);
     }
     public void setDriver(WebDriver driver){
         helpers=new Helpers(driver);
         this.functions=new Functions(driver);
+        PageFactory.initElements(driver,this);
     }
+
 
     @FindBy(xpath = "//button[@class='remove-btn'][1]")
     WebElement firstProductRemoveButton;
@@ -99,18 +105,23 @@ public class CartPage {
         return totalSum;
     }
 
-    public void deleteFirstProduct(){
-        if(productsRemoveButtonList.size()>1) {
-            helpers.clickElement(firstProductRemoveButton);
-        }
+    public int numberOfProducts(){
+        return productsRemoveButtonList.size();
     }
+
+    public void removeProduct(int i){
+        WebElement element=productsRemoveButtonList.get(i);
+        helpers.clickElement(productsRemoveButtonList.get(i));
+        helpers.waitUntilStalenessOfElement(element);
+
+    }
+
 
     public void deleteProductByIndex(int index){
         if(index<productsRemoveButtonList.size()){
             helpers.clickElement(productsRemoveButtonList.get(index));
         }
     }
-
 
     public void deleteAllProductsInCart() {
         int totalOfProducts=helpers.getNumberOfElements(productsRemoveButtonList);
@@ -121,31 +132,51 @@ public class CartPage {
             verifyNumberOfProductsInCart(tmp);
         }
     }
+    public void waitForNumberOfProductsToGetUpdated(int nr){
+        helpers.waitForTextOfElementToBe("//a[@href='/cart']//span[2]","("+(nr)+")");
+    }
 
     public void verifyNumberOfProductsInCart(int nr){
         int total=helpers.getNumberOfElements(productsRemoveButtonList);
         Assert.assertEquals(total,nr);
     }
 
+
     public void verifyCartIsEmpty(){
         Assert.assertTrue(emptyCartMessage.isDisplayed());
     }
+
     public void verifyNavigationToCartPageWasSuccessful(){
         helpers.assertElementIsVisible(pageMainTitle);
     }
-    public void verifyButtonsAreShown(){
+
+
+    public void verifyUpdateShoppingCartButtonIsShown(){
         helpers.assertElementIsVisible(updateShoppingCartButton);
+    }
+
+    public void verifyContinueShoppingButtonButtonIsShown(){
         helpers.assertElementIsVisible(continueShoppingButton);
+    }
+
+    public void verifyEstimateShippingButtonButtonIsShown(){
         helpers.assertElementIsVisible(estimateShippingButton);
     }
 
-    public void verifySumOfProductsIsCorrect(){
-    double sum=0;
-    double total=functions.parseToDoubleFromString(totalSum.getText());
-    for(WebElement element: productsPriceList){
-        sum+=functions.parseToDoubleFromString(element.getText());
+    public double getSumTotal(){
+        return functions.parseToDoubleFromString(totalSum.getText());
     }
-    Assert.assertEquals(sum,total);
+
+    public double getSumOfAllProducts(){
+        double sum=0;
+        for(WebElement element: productsPriceList){
+            sum+=functions.parseToDoubleFromString(element.getText());
+        }
+        return sum;
     }
+    public void waitForNumberOrProductsToBe(int nr){
+        helpers.waitForNumberOfElementsToBe(By.xpath("//button[@class='remove-btn']"),nr);
+    }
+
 
 }

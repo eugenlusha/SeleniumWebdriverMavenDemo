@@ -4,7 +4,7 @@ import com.sample.www.nopCommerce.MainPage;
 import common.TestBase;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.Test;
-import com.sample.www.helpers.UserData;
+import com.sample.www.helpers.Constants;
 
 import java.util.concurrent.TimeUnit;
 
@@ -13,152 +13,100 @@ public class SimpleScenario extends TestBase {
 
     @Test
     public void testi() throws InterruptedException {
-        test = extent.createTest("Test te ndryshme", "test")
-                .assignCategory("e2e testin")
-                .assignAuthor("eugen");
-        //Initialization of page object classes
-        LoginPage loginPage=PageFactory.initElements(driver,LoginPage.class);
-        loginPage.setDriver(driver);
-        MainPage mainPage=PageFactory.initElements(driver,MainPage.class);
-        mainPage.setDriver(driver);
-        RegisterPage registerPage=PageFactory.initElements(driver,RegisterPage.class);
-        registerPage.setDriver(driver);
-
-        //Navigate to main page
-        driver.manage().window().maximize();
-        driver.get("https://demo.nopcommerce.com/");
 
         //Go to login page
-        mainPage.goToLoginPage();
+        mainPageService.navigateToLoginPage();
 
         //Go to register page and print browser title in console
-        loginPage.goToRegisterPage();
-        System.out.println(driver.getTitle());
+        loginPageService.navigateToRegisterPage();
+        mainPageService.printActualURL();
 
         //Register new user and verify registration was successful
-        registerPage.registerNewUser(UserData.gender,UserData.emri,UserData.mbiemri,UserData.dit,UserData.muaj,UserData.vit,UserData.email,UserData.company,UserData.getNews,UserData.password);
-        registerPage.verifyRegisterProcessWasSuccessful();
+        registerPageService.registerNewUser(Constants.gender, Constants.emri, Constants.mbiemri, Constants.dit, Constants.muaj, Constants.vit, Constants.email, Constants.company, Constants.getNews, Constants.password);
+        registerPageService.verifyRegisterWasSuccessful();
 
         //Logout and then go to login page and login with the same credentials
-        mainPage.logOutOfAccount();
-        mainPage.goToLoginPage();
-        loginPage.loginWithCredentials(UserData.email,UserData.password);
+        mainPageService.logoutOfAccount();
+        mainPageService.navigateToLoginPage();
+        loginPageService.loginWithCredentials(Constants.email, Constants.password);
 
         //Verify login was successful and then logout
-        mainPage.verifyLoginWasSuccessful();
-        mainPage.logOutOfAccount();
+        mainPageService.verifyLoginWasSuccessful();
+        mainPageService.logoutOfAccount();
 
 
     }
     @Test
     public void testi2() throws InterruptedException {
-        test = extent.createTest("Test te ndryshme", "test")
-                .assignCategory("e2e testin")
-                .assignAuthor("eugen");
-        //Initialization of page object classes
-        MainPage mainPage = PageFactory.initElements(driver,MainPage.class);
-        mainPage.setDriver(driver);
-        NotebooksPage notebooksPage = PageFactory.initElements(driver,NotebooksPage.class);
-        notebooksPage.setDriver(driver);
-        LoginPage loginPage= PageFactory.initElements(driver,LoginPage.class);
-        loginPage.setDriver(driver);
-        driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
 
-        //Navigate to main page and login after going to login page
-        driver.get("https://demo.nopcommerce.com/");
-        mainPage.goToLoginPage();
-        loginPage.loginWithCredentials(UserData.email,UserData.password);
+        //Navigate to login page and login with credentials
+        mainPageService.navigateToLoginPage();
+        loginPageService.loginWithCredentials(Constants.email, Constants.password);
 
         //Go to notebooks page and verify if the url is that of notebooks page
-        mainPage.goToNotebooksPage();
-        notebooksPage.verifyUrlOfNotebooksPage();
+        mainPageService.navigateToNotebooksPage();
+        notebooksPageService.verifyUrlOfNotebooksPage();
 
         //Show 9 products per page
-        notebooksPage.selectNumberOfProductsPerPage("9");
-        notebooksPage.verifyNumberOfProductsDisplayed(6);
+        notebooksPageService.selectNumberOfProductsToBeShown("9");
+        notebooksPageService.verifyNumberOfDisplayedProductsIsCorrect(6);
 
         //Filter products by 16gb
-        notebooksPage.filterProductsBy16Gb();
-        notebooksPage.verifyNumberOfProductsDisplayed(1);
+        notebooksPageService.filterProductsBy16Gb();
+        notebooksPageService.verifyNumberOfDisplayedProductsIsCorrect(1);
 
         //Remove 16gb filter
-        notebooksPage.unfilterProductsBy16Gb();
-        notebooksPage.verifyNumberOfProductsDisplayed(6);
+        notebooksPageService.unfilterProductsBy16Gb();
+        notebooksPageService.verifyNumberOfDisplayedProductsIsCorrect(6);
 
         //Add second and third product to wishlist
-        notebooksPage.addProductToWishlistByIndex(2);
-        notebooksPage.addProductToWishlistByIndex(3);
-
+        notebooksPageService.addProductToWishlistByIndex(2);
+        notebooksPageService.addProductToWishlistByIndex(3);
 
         //Add 4th 5th and 6th product to shopping cart
-        notebooksPage.addProductToCartByIndex(4);
-        notebooksPage.addProductToCartByIndex(5);
-        notebooksPage.addProductToCartByIndex(6);
-
+        notebooksPageService.addProductToCartByIndex(4);
+        notebooksPageService.addProductToCartByIndex(5);
+        notebooksPageService.addProductToCartByIndex(6);
 
         //Verify we have 2 products in wishlist and 3 in cart
-        notebooksPage.verifyNumberOfProductsInWishlist(2);
-        notebooksPage.verifyNumberOfProductsInCart(3);
-        mainPage.logOutOfAccount();
-//         driver.quit();
+        notebooksPageService.verifyNumberOfProductsInWishList(2);
+        notebooksPageService.verifyNumberOfProductsInCart(3);
+        mainPageService.logoutOfAccount();
+
     }
 
     @Test
     public void testi3() throws InterruptedException {
-        test = extent.createTest("Test te ndryshme", "test")
-                .assignCategory("e2e testin")
-                .assignAuthor("eugen");
 
-        MainPage mainPage = PageFactory.initElements(driver,MainPage.class);
-        mainPage.setDriver(driver);
-        LoginPage loginPage= PageFactory.initElements(driver,LoginPage.class);
-        loginPage.setDriver(driver);
-        MyAccountPage myAccountPage = PageFactory.initElements(driver,MyAccountPage.class);
-        myAccountPage.setDriver(driver);
-
-
-        //Navigate to main page and then login
-        driver.get("https://demo.nopcommerce.com/");
-        mainPage.goToLoginPage();
-        loginPage.loginWithCredentials(UserData.email,UserData.password);
+        //Navigate to login page and login with credentials
+        mainPageService.navigateToLoginPage();
+        loginPageService.loginWithCredentials(Constants.email, Constants.password);
 
         //Go to My Account page and verify we did navigate to my account page
-        mainPage.goToMyAccountPage();
-        myAccountPage.verifyNavigationToMyAccountPageWasSuccessful();
+        mainPageService.navigateToMyAccountPage();
+        myAccountPageService.verifyNavigationToMyAccountPageWasSuccessful();
 
         //Validate the data of the account
-        myAccountPage.verifyUserCredentialsInMyAccountPage(UserData.gender,UserData.emri,UserData.mbiemri,UserData.dit,UserData.muaj,UserData.vit,UserData.email,UserData.company,UserData.getNews, UserData.password);
-        mainPage.logOutOfAccount();
-       // driver.quit();
+        myAccountPageService.verifyUserCredentialsAreCorrect(Constants.gender, Constants.emri, Constants.mbiemri, Constants.dit, Constants.muaj, Constants.vit, Constants.email, Constants.company, Constants.getNews, Constants.password);
+        mainPageService.logoutOfAccount();
     }
 
     @Test
     public void testi4() throws InterruptedException {
-        test = extent.createTest("Test te ndryshme", "test")
-                .assignCategory("e2e testin")
-                .assignAuthor("eugen");
-        driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
-        MainPage mainPage = PageFactory.initElements(driver, MainPage.class);
-        mainPage.setDriver(driver);
-        LoginPage loginPage = PageFactory.initElements(driver, LoginPage.class);
-        loginPage.setDriver(driver);
-        CartPage cartPage= PageFactory.initElements(driver,CartPage.class);
-        cartPage.setDriver(driver);
 
 
-        //Navigate to main page and then login
-        driver.get("https://demo.nopcommerce.com/");
-        mainPage.goToLoginPage();
-        loginPage.loginWithCredentials(UserData.email,UserData.password);
+        //Navigate to login page and login with credentials
+        mainPageService.navigateToLoginPage();
+        loginPageService.loginWithCredentials(Constants.email, Constants.password);
 
         //Navigate to cart page after hovering cart menu and verify navigation was successful and buttons are shown
-        mainPage.goToCartThroughButtonAfterHoveringCartMenu();
-        cartPage.verifyNavigationToCartPageWasSuccessful();
-        cartPage.verifyButtonsAreShown();
+        mainPageService.navigateToCartPageThroughCartMenu();
+        cartPageService.verifyNavigationToCartPageWasSuccessful();
+        cartPageService.verifyButtonsAreShown();
 
         //Verify sum of prices is correct
-        cartPage.verifySumOfProductsIsCorrect();
-        mainPage.logOutOfAccount();
+        cartPageService.verifySumOfProductsIsCorrect();
+        mainPageService.logoutOfAccount();
 
     }
 
@@ -166,31 +114,21 @@ public class SimpleScenario extends TestBase {
 
     @Test
     public void testi5() throws InterruptedException {
-        test = extent.createTest("Test te ndryshme", "test")
-                .assignCategory("e2e testin")
-                .assignAuthor("eugen");
-        driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
-        MainPage mainPage = PageFactory.initElements(driver, MainPage.class);
-        mainPage.setDriver(driver);
-        LoginPage loginPage = PageFactory.initElements(driver, LoginPage.class);
-        loginPage.setDriver(driver);
-        CartPage cartPage= PageFactory.initElements(driver,CartPage.class);
-        cartPage.setDriver(driver);
 
 
-        //Navigate to main page and then login
-        driver.get("https://demo.nopcommerce.com/");
-        mainPage.goToLoginPage();
-        loginPage.loginWithCredentials(UserData.email,UserData.password);
+        //Navigate to login page and login with credentials
+        mainPageService.navigateToLoginPage();
+        loginPageService.loginWithCredentials(Constants.email, Constants.password);
 
         //Navigate to cart page
-        mainPage.goToCart();
+        mainPageService.navigateToCartPage();
 
-        //Delete first product and wait for list to update
-        cartPage.deleteFirstProduct();
-        //cartPage.waitUntilProductIsRefreshed(cartPage.getProductsRemoveButtonList().get(cartPage.getProductsRemoveButtonList().size()-1));
-        cartPage.deleteAllProductsInCart();
-        cartPage.verifyCartIsEmpty();
+        //Delete first product
+        cartPageService.deleteFirstProduct();
+
+        //Delete all products and verify cart is empty
+        cartPageService.deleteAllProducts();
+        cartPageService.verifyCartIsEmpty();
 
     }
 

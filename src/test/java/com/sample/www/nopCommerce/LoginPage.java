@@ -3,7 +3,9 @@ import com.sample.www.Functions.Functions;
 import com.sample.www.helpers.Helpers;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.devtools.v85.page.Page;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 
 
 public class LoginPage {
@@ -25,10 +27,12 @@ public class LoginPage {
     public LoginPage(WebDriver driver){
         this.helpers=new Helpers(driver);
         this.functions=new Functions(driver);
+        PageFactory.initElements(driver,this);
     }
     public void setDriver(WebDriver driver){
         this.helpers=new Helpers(driver);
         this.functions=new Functions(driver);
+        PageFactory.initElements(driver,this);
     }
 
     public WebElement getEmailBox() {
@@ -47,13 +51,18 @@ public class LoginPage {
         return registerButton;
     }
 
-    public void loginWithCredentials(String email, String password){
-        helpers.sendKeys(emailBox,email);
-        helpers.sendKeys(passwordBox,password);
-        helpers.clickElement(loginButton);
-    }
     public void goToRegisterPage(){
         helpers.clickElement(registerButton);
+    }
+
+    public void fillEmail(String email){
+        helpers.sendKeys(emailBox,email);
+    }
+    public void fillPassword(String password){
+        helpers.sendKeys(passwordBox,password);
+    }
+    public void proceedToLogin(){
+        helpers.clickElement(loginButton);
     }
 
 }

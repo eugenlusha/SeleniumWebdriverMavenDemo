@@ -5,6 +5,8 @@ import com.sample.www.helpers.Helpers;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.Assert;
 
 public class MyAccountPage {
     Helpers helpers;
@@ -13,10 +15,12 @@ public class MyAccountPage {
     public MyAccountPage(WebDriver driver){
         this.helpers=new Helpers(driver);
         this.functions=new Functions(driver);
+        PageFactory.initElements(driver,this);
     }
     public void setDriver(WebDriver driver){
         this.helpers=new Helpers(driver);
         this.functions=new Functions(driver);
+        PageFactory.initElements(driver,this);
     }
 
     @FindBy(xpath = "//h1[text()='My account - Customer info']")
@@ -46,40 +50,84 @@ public class MyAccountPage {
         return radioMaleGender;
     }
 
+    public void verifyMaleGenderRadioButtonIsSelected(){
+        Assert.assertTrue(radioMaleGender.isSelected());
+    }
+
     public WebElement getRadioFemaleGender() {
         return radioFemaleGender;
+    }
+
+    public void verifyFemaleGenderRadioButtonIsSelected(){
+        Assert.assertTrue(radioMaleGender.isSelected());
     }
 
     public WebElement getFirstName() {
         return firstName;
     }
 
+    public void verifyFirstNameIsCorrect(String firstNameString){
+        helpers.assertElementHasTextFromInput(firstName,firstNameString);
+    }
+
     public WebElement getLastName() {
         return lastName;
+    }
+
+    public void verifyLastNameIsCorrect(String lastNameString){
+        helpers.assertElementHasTextFromInput(lastName,lastNameString);
     }
 
     public WebElement getBirthDay() {
         return birthDay;
     }
 
+    public void verifyDayOfBirthIsCorrect(String day){
+        helpers.assertSelectedElementFromSelectList(birthDay,day);
+    }
+
     public WebElement getBirthMonth() {
         return birthMonth;
+    }
+
+    public void verifyMonthOfBirthIsCorrect(String month){
+        helpers.assertSelectedElementFromSelectList(birthMonth,month);
     }
 
     public WebElement getBirthYear() {
         return birthYear;
     }
 
+    public void verifyYearOfBirthIsCorrect(String year){
+        helpers.assertSelectedElementFromSelectList(birthYear,year);
+    }
+
     public WebElement getEmailBox() {
         return emailBox;
+    }
+
+    public void verifyEmailIsCorrect(String email){
+        helpers.assertElementHasTextFromInput(emailBox,email);
     }
 
     public WebElement getCompanyBox() {
         return companyBox;
     }
 
+    public void verifyCompanyIsCorrect(String company){
+        helpers.assertElementHasTextFromInput(companyBox,company);
+    }
+
     public WebElement getNewsletter() {
         return newsletter;
+    }
+
+    public void verifyNewsButtonIsSelected(){
+        Assert.assertTrue(newsletter.isSelected());
+    }
+
+    public void verifyNewsButtonIsNotSelected(){
+        Assert.assertFalse(newsletter.isSelected());
     }
 
     public WebElement getMyAccountPageWelcomingTitle() {

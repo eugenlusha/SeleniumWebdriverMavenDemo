@@ -15,7 +15,8 @@ public class Screenshot {
             Date date=new Date();
             TakesScreenshot ts =(TakesScreenshot) driver;
             File source=ts.getScreenshotAs(OutputType.FILE);
-            FileUtils.copyFile(source, new File("./Screenshots/"+name+date.getTime()+".png"));
+            FileUtils.copyFile(source, new File("./Screenshots/"+name+"_"+(date.getYear()-100)+"-"+(date.getMonth()+1)+"-"+date.getDay()+"_"+date.getHours()+"-"+date.getMinutes()+".png"));
+
             System.out.println("Screenshot was taken");
         } catch (Exception e) {
             e.printStackTrace();

@@ -5,7 +5,9 @@ import com.sample.www.Functions.Functions;
 import com.sample.www.helpers.Helpers;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.devtools.v85.page.Page;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 
 
 public class MainPage {
@@ -14,10 +16,12 @@ public class MainPage {
     public void setDriver(WebDriver driver){
         this.helpers=new Helpers(driver);
         this.functions=new Functions(driver);
+        PageFactory.initElements(driver,this);
     }
     public MainPage(WebDriver driver){
         this.helpers=new Helpers(driver);
         this.functions=new Functions(driver);
+        PageFactory.initElements(driver,this);
     }
     @FindBy(className = "ico-login")
     WebElement loginPageRedirectingButton;
@@ -134,6 +138,10 @@ public class MainPage {
         hoverCartMenu();
         helpers.assertElementIsVisible(goToCartButton);
         goToCartButton.click();
+    }
+
+    public String getCurrentUrl(){
+        return helpers.getCurrentURL();
     }
 
 }

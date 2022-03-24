@@ -1,10 +1,12 @@
 package com.sample.www.nopCommerce;
 
 import com.sample.www.Functions.Functions;
+import com.sample.www.helpers.Constants;
 import com.sample.www.helpers.Helpers;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
 
 import java.util.List;
@@ -17,10 +19,12 @@ public class NotebooksPage {
      public NotebooksPage(WebDriver driver){
           this.helpers=new Helpers(driver);
           this.functions=new Functions(driver);
+          PageFactory.initElements(driver,this);
      }
      public void setDriver(WebDriver driver){
           this.helpers=new Helpers(driver);
           this.functions=new Functions(driver);
+          PageFactory.initElements(driver,this);
      }
      @FindBy(xpath = "//select[@id='products-pagesize']")
      WebElement numberOfProductsPerPageSelectList;
@@ -56,12 +60,21 @@ public class NotebooksPage {
           return numberOfProductsPerPageSelectList;
      }
 
+     public void chooseNumberOrProductsShown(String nr){
+          helpers.selectByVisibleText(numberOfProductsPerPageSelectList,nr);
+     }
+
      public WebElement getFilterBy16Gb() {
           return filterBy16Gb;
      }
 
+
      public List<WebElement> getListOfDisplayedElements() {
           return listOfDisplayedElements;
+     }
+
+     public int getNumberOfProductsActuallyDisplayed(){
+          return listOfDisplayedElements.size();
      }
 
      public WebElement getAddingToWishlistOrCartSuccessNotification() {
@@ -84,8 +97,12 @@ public class NotebooksPage {
           return addProductToWishlistButtonList;
      }
 
-     public List<WebElement> getAddProductToShoppingCartButtonList() {
-          return addProductToShoppingCartButtonList;
+     public int getNumberOrProductsAddableToWishlist(){
+          return  addProductToWishlistButtonList.size();
+     }
+
+     public int getNumberOrProductsAddableToCart(){
+          return  addProductToShoppingCartButtonList.size();
      }
 
      public void selectNumberOfProductsPerPage(String str){
@@ -93,12 +110,20 @@ public class NotebooksPage {
           helpers.waitUntilStalenessOfElement(listOfDisplayedElements.get(0));
      }
 
+     public WebElement getFirstShownProduct(){
+          return listOfDisplayedElements.get(0);
+     }
+
+     public void waitForListOfElementsToBeRefreshed(WebElement element){
+          helpers.waitUntilStalenessOfElement(element);
+     }
      public void filterProductsBy16Gb(){
           if(!helpers.isElementSelected(filterBy16Gb)){
               helpers.clickElement(filterBy16Gb);
           }
           helpers.waitUntilStalenessOfElement(listOfDisplayedElements.get(0));
      }
+
      public void unfilterProductsBy16Gb(){
           if(helpers.isElementSelected(filterBy16Gb)){
                helpers.clickElement(filterBy16Gb);
@@ -107,40 +132,31 @@ public class NotebooksPage {
      }
 
      public void verifyUrlOfNotebooksPage(){
-          helpers.assertWebpageLinkIsAsExpected("https://demo.nopcommerce.com/notebooks");
-     }
-     public void verifyNumberOfProductsDisplayed(int number){
-          helpers.waitUntilAllElementsAreVisible(listOfDisplayedElements);
-          Assert.assertEquals(listOfDisplayedElements.size(),number);
+          helpers.assertWebpageLinkIsAsExpected(Constants.notebooksPageURL);
      }
 
+
      public void addProductToWishlistByIndex(int position){
-          if(position<=addProductToWishlistButtonList.size()){
                helpers.clickElement(addProductToWishlistButtonList.get(position-1));
                helpers.waitUntilElementIsVisible(addingToWishlistOrCartSuccessNotification);
-               helpers.assertElementHasText(addingToWishlistOrCartSuccessNotification,"The product has been added to your wishlist");
+               helpers.assertElementHasText(addingToWishlistOrCartSuccessNotification,Constants.addedToWishlistSuccessMessage);
                helpers.waitUntilElementIsInvisible(addingToWishlistOrCartSuccessNotification);
-          }
      }
 
      public void addProductToCartByIndex(int position){
-          if(position<=addProductToShoppingCartButtonList.size()){
                helpers.clickElement(addProductToShoppingCartButtonList.get(position-1));
                helpers.waitUntilElementIsVisible(addingToWishlistOrCartSuccessNotification);
-               helpers.assertElementHasText(addingToWishlistOrCartSuccessNotification,"The product has been added to your shopping cart");
+               helpers.assertElementHasText(addingToWishlistOrCartSuccessNotification,Constants.addedToCartSuccessMessage);
                helpers.waitUntilElementIsInvisible(addingToWishlistOrCartSuccessNotification);
-          }
      }
 
-     public void verifyNumberOfProductsInCart(int number){
-        String value="("+number+")";;
-        helpers.waitUntilElementIsVisible(cartNumberOfProductsAdded);
-        Assert.assertEquals(cartNumberOfProductsAdded.getText(),value);
-    }
-    public void verifyNumberOfProductsInWishlist(int number){
-        String value="("+number+")";;
-        helpers.waitUntilElementIsVisible(wishlistNumberOfProductsAdded);
-        Assert.assertEquals(wishlistNumberOfProductsAdded.getText(),value);
-    }
+     public String getNumberOfProductsAddedToWishlist(){
+          return wishlistNumberOfProductsAdded.getText();
+     }
+     public String getNumberOfProductsAddedToCart(){
+          return cartNumberOfProductsAdded.getText();
+     }
+
+
 
 }
